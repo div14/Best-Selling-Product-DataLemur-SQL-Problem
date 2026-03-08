@@ -1,0 +1,15 @@
+with new as 
+(SELECT 
+  products.category_name,
+  products.product_name,
+  DENSE_RANK() OVER(PARTITION BY products.category_name 
+                    ORDER BY product_sales.sales_quantity DESC, product_sales.rating DESC) AS rnk
+FROM products
+JOIN product_sales 
+ON products.product_id=product_sales.product_id)
+
+SELECT 
+  category_name, 
+  product_name 
+FROM new
+WHERE rnk=1
